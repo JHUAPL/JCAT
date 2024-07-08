@@ -1,0 +1,141 @@
+PDS_VERSION_ID                 = PDS3                                         
+LABEL_REVISION_NOTE            = "2009-02-04 D. Humm (APL) v5 to              
+                                  go with v5 AT CDRs;                         
+                                  2009-05-20 D. Humm (APL) still              
+                                  v5 but new filename format;                 
+                                  2012-03-14 F.Morgan (APL) v8 TRR3,          
+                                  power law normalization for                 
+                                  aerosol, artifact spectrum"                 
+                                                                              
+DATA_SET_ID                    = "MRO-M-CRISM-4-ADR-V1.0"                     
+PRODUCT_ID                     = "ADR10000000000_1B815_VS00L_8"               
+                                                                              
+                               /*( ADRptttttttttt_xxxxx_VSbwn_v           )*/ 
+                               /*( p = partition at start of validity     )*/ 
+                               /*( tttttttttt = sclk at start of validity )*/ 
+                               /*( xxxxx = obs. ID of volcano scan TRDR   )*/ 
+                               /*( b = binning identifier, 0-3            )*/ 
+                               /*( w = wavelength filter, 0-3             )*/ 
+                               /*( n = sensor ID: S, L, or J              )*/ 
+                               /*( v = version                            )*/ 
+                                                                              
+PRODUCT_TYPE                   = ADR                                          
+INSTRUMENT_HOST_NAME           = "MARS RECONNAISSANCE ORBITER"                
+SPACECRAFT_ID                  = MRO                                          
+INSTRUMENT_NAME                = "COMPACT RECONNAISSANCE IMAGING SPECTROMETER 
+                                  FOR MARS"                                   
+INSTRUMENT_ID                  = CRISM                                        
+TARGET_NAME                    = MARS                                         
+START_TIME                     = 1980-01-01T00:00:00                          
+STOP_TIME                      = 2009-04-15T22:13:00                          
+SPACECRAFT_CLOCK_START_COUNT   = "1/0000000000"                               
+SPACECRAFT_CLOCK_STOP_COUNT    = "5/0924300802"                               
+OBSERVATION_TIME               = NULL                                         
+PRODUCT_CREATION_TIME          = 2013-04-19T13:28:00.000                      
+                                                                              
+MRO:SENSOR_ID                  = "L"                                          
+PRODUCT_VERSION_ID             = "8"                                          
+                                                                              
+SAMPLING_MODE_ID               = "HYPERSPEC"                                  
+MRO:WAVELENGTH_FILE_NAME       = "CDR410803692813_WA0000000L_3.IMG"           
+PIXEL_AVERAGING_WIDTH          = 1  /*( pixel bin size, across track )    */  
+MRO:WAVELENGTH_FILTER          = "0"                                          
+SOURCE_PRODUCT_ID = {"FFC0001B815_01_IF254L_TRR3"}                            
+                                                                              
+/* Atmospheric Transmission from Volcano Scan with artifact spectrum        */
+                                                                              
+/* This ADR label describes one calibration data file. The file             */
+/* is a mutiple-band, multiple-frame image file derived from flight data.   */
+/* It consists of a binary image followed by a list of row numbers          */
+/* corresponding to the wavelength filter.                                  */
+                                                                              
+/* The VS or volcano scan ADR was calculated by Frank Morgan                */
+/* of JHU/APL  from CRISM observations of Olympus Mons.                     */
+                                                                              
+/*                                                                          */
+/* This level 4 ADR contains 3 lines. The first line is the atmospheric     */
+/* transmission spectrum at each binned detector column. Subsequent lines   */
+/* are artifact spectra for each column; different lines correspond to      */
+/* different pairs of scaling wavelengths as follows:                       */
+/* Line 2: [2007.0,1980.0], McGuire                                         */
+/* Line 3: [2011.0,1899.0], Pelkey                                          */
+/*                                                                          */
+/* This VS ADR gives atmospheric transmission derived from volcano scan     */
+/* observation ID 1B815.                                                    */
+/*                                                                          */
+/* Atmospheric transmission is derived by dividing spectra from the base    */
+/* (near 0 km elevation) by spectra from the summit (near 20 km elevation). */
+/* It includes a spectral fit-based adjustment to correct an aerosol-like   */
+/* slope at wavelengths shortward of approximately 2.7 microns. The raw     */
+/* transmission is fit at wavelengths outside gas absorptions with an       */
+/* aerosol model with optical depth quadratic in log wavelength, then       */
+/* divided by that fit.                                                     */
+/* The detailed shape of the 2-micron CO2 absorption in CRISM depends on    */
+/* pressure and temperature. The volcano scan derived transmision,          */
+/* combining high and low elevation spectra, differs in detail from the     */
+/* observed spectra being corrected. Atmospheric correction usually leaves  */
+/* a broad bowl-shaped depression around 2 microns as a result of the       */
+/* mismatch between scene and transmission spectra. A first order artifact  */
+/* correction can be applied by adding a multiple of an artifact spectrum   */
+/* from this ADR to the spectrum after initial correction. The artifact     */
+/* spectrum included in this ADR is derived by correcting spectra from the  */
+/* volcano scan base with the tranmsmission derived from the same volcano   */
+/* scan - essentially, correcting the volcano scan with itself. A linear    */
+/* interpolation between two wavelengths bracketing the 2-micron region     */
+/* is assumed to define the correct continuum, and the difference between   */
+/* continuum estimate and the actual correction is the artifact spectrum.   */
+/* For these artifact spectra, the interpolation wavelengths were:          */
+/* 1764.0,2239.0 nm                                                         */
+/* Use the artifact spectrum matching the scaling wavelengths used for      */
+/* initial correction.                                                      */
+                                                                              
+OBJECT                         = FILE                                         
+  ^IMAGE                       = "ADR10000000000_1B815_VS00L_8.IMG"           
+                                                                              
+  /* offset is in file records, which is just (imgbands*imglines) + 1 */      
+  ^ROWNUM_TABLE = ("ADR10000000000_1B815_VS00L_8.IMG", 439 )                  
+                                                                              
+  RECORD_TYPE   = FIXED_LENGTH                                                
+  RECORD_BYTES = 2560 /* one row now, not one frame to save space in table */ 
+  FILE_RECORDS = 1315 /* compute by ROUND ((imgbands * imglines *          */ 
+                      /*                    line_samples * samplebits/8 +  */ 
+                      /*                    tablerows * tablerowbytes) /   */ 
+                      /*                    record_bytes + 0.5 )           */ 
+  OBJECT                       = IMAGE                                        
+    LINES                      = 3                                            
+    LINE_SAMPLES               = 640                                          
+    SAMPLE_TYPE                = PC_REAL                                      
+    SAMPLE_BITS                = 32                                           
+    BANDS                      = 438                                          
+    BAND_NAME                  = NULL                                         
+    BAND_STORAGE_TYPE          = LINE_INTERLEAVED                             
+    DESCRIPTION                = "Atmospheric transmission"                   
+  END_OBJECT                   = IMAGE                                        
+                                                                              
+  /* be sure to pad this object to a full record (2560/bin bytes here)      */
+  OBJECT = ROWNUM_TABLE                                                       
+    NAME               = "SELECTED ROWS FROM DETECTOR"                        
+    INTERCHANGE_FORMAT = "BINARY"                                             
+    ROWS               = 438                                                  
+    COLUMNS            = 1                                                    
+    ROW_BYTES          = 2                                                    
+    DESCRIPTION   = "The detector is subsampled in the spectral direction     
+                     by selecting specific rows to be downlinked.  This       
+                     table provides a list of the rows selected for all       
+                     frames in this multidimensional image cube."             
+                                                                              
+    OBJECT = COLUMN                                                           
+      NAME          = DETECTOR_ROW_NUMBER                                     
+      DATA_TYPE     = MSB_UNSIGNED_INTEGER                                    
+      BIT_MASK      = 2#0000000111111111#                                     
+      START_BYTE    = 1                                                       
+      BYTES         = 2                                                       
+      DESCRIPTION   = "Detector row number from which the data was taken."    
+    END_OBJECT = COLUMN                                                       
+                                                                              
+  END_OBJECT = ROWNUM_TABLE                                                   
+                                                                              
+END_OBJECT                     = FILE                                         
+                                                                              
+END                                                                           
+                                                                              

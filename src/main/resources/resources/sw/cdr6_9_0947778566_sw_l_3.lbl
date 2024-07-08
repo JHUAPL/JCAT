@@ -1,0 +1,131 @@
+PDS_VERSION_ID                 = PDS3
+LABEL_REVISION_NOTE            = "2006-03-14 D. Humm (APL), created;
+                                  version 0 prelim Rob Green cal <2500 nm
+                                  and 5x5 >2500 nm; version 1 D. Humm,
+                                  replace all non-scene with 65535.;
+                                  version 2 2006-09-21 D. Humm,
+                                  final ground Rob Green cal 
+                                  <2500 nm and 5x5 >2500 nm;
+                                  version 3 2007-01-23 D. Humm,
+                                  adjust by 1.5-3 nm wavelength
+                                  shift as a function of column #
+                                  supplied by Rob Green 2007-01-03" 
+
+/*( NOTE: Comments in this label that are delimited with parentheses,     )*/
+/*( for example:                                                          )*/
+        /*( comment )*/
+/*( are notes to the data provider. These comments should be removed      )*/
+/*( from the final label.  Comments without parentheses, for example:     )*/
+        /* comment */
+/*( are intended to be part of the final label.                           )*/
+
+/* Level 6 CDR (Calibration Data Record) Identification */
+
+DATA_SET_ID                    = "MRO-M-CRISM-4/6-CDR-V1.0"
+PRODUCT_ID                     = "CDR6_9_0947778566_SW_L_3"
+
+PRODUCT_TYPE                   = CDR
+SPACECRAFT_ID                  = MRO
+INSTRUMENT_ID                  = CRISM
+START_TIME                     = 2010-01-12T15:48:55
+STOP_TIME                      = NULL
+SPACECRAFT_CLOCK_START_COUNT   = "9/0947778566"
+SPACECRAFT_CLOCK_STOP_COUNT    = NULL
+OBSERVATION_TIME               = NULL
+PRODUCT_CREATION_TIME          = 2010-02-18T21:24:00
+
+OBSERVATION_TYPE               = NULL 
+OBSERVATION_ID                 = NULL 
+MRO:OBSERVATION_NUMBER         = NULL 
+MRO:ACTIVITY_ID                = NULL 
+SOURCE_PRODUCT_ID              = NULL
+MRO:SENSOR_ID                  = "L" 
+PRODUCT_VERSION_ID             = "3" 
+
+/* CDR Instrument and Observation Parameters */
+
+MRO:WAVELENGTH_FILE_NAME       = "CDR6_1_0000000000_SW_L_3.TAB"
+MRO:DETECTOR_TEMPERATURE       = NULL 
+MRO:OPTICAL_BENCH_TEMPERATURE  = NULL 
+MRO:SPECTROMETER_HOUSING_TEMP  = NULL 
+MRO:SPHERE_TEMPERATURE         = NULL 
+SHUTTER_MODE_ID                = "OPEN" 
+LIGHT_SOURCE_NAME              = "NONE" 
+MRO:CALIBRATION_LAMP_STATUS    = "OFF" 
+MRO:CALIBRATION_LAMP_LEVEL     = 0 
+
+/* CRISM IR Sampling Wavelength Table                                       */
+
+/* The CRISM IR spectrometer has smile, so a given row is not at constant   */
+/* wavelength bit varies by a little more than a wavelength bin across the  */
+/* range of spatial pixels.  It is convenient for users of the CRISM data   */
+/* to be able to do calculations assuming a given row is at a constant      */
+/* wavelength.  This table gives a standard set of wavelengths to use for   */
+/* such approximations.  Each wavelength in this table is an average of the */
+/* wavelengths in a single row for columns 270-369.                         */
+
+/* The sampling wavelength has two uses.  The unbinned IR columns 270-369   */
+/* represent a part of the field of view with less than 1 nm smile, and     */
+/* within that part of the field of view, the sample wavelength values are  */
+/* in error by less than half a nm.  Our pixels are separated by about      */
+/* 6.55 nm center-to-center, so half a nm of error is negligible for many   */
+/* purposes.  Therefore, many analyses may proceed ignoring the smile, if   */
+/* they operate only on columns 270-369.  This is particularly useful for   */
+/* atmospheric analyses.  The second use of the sampling wavelength is as a */
+/* standard set of wavelengths for nearest-neighbor wavelength resampling   */
+/* of the entire field of view.  This is useful for analyses (such as       */
+/* broad mineralogical features in spectral regions without atmospheric     */
+/* absorption lines) that are not sensitive to half a pixel (about 3.3 nm)  */
+/* of wavelength error. The fact that the resampled wavelengths are accurate*/
+/* in columns 270-369 is helpful for the user to evaluate the effect of the */
+/* resampling error in the rest of a given image.                           */
+
+/* Related CDRs: The WA level 4 CDR gives the actual center wavelength for  */
+/* each pixel, including smile.  The RW level 4 CDR gives the resampled     */
+/* wavelength for each pixel.                                               */
+/* The PS level 4 CDR gives the row number of the Zone 0 sampling           */
+/* wavelength used by a pixel minus the row number of the pixel.            */
+/* The zone 0 sampling wavelengths are given in the SW level 6 CDR.         */
+
+OBJECT                         = FILE
+/* The time string in the file name will increment if there is a change in  */
+/* VNIR standard sampling wavelengths                                       */
+  ^TABLE                       = "CDR6_9_0947778566_SW_L_3.TAB"
+  RECORD_TYPE                  = FIXED_LENGTH
+  RECORD_BYTES                 = 14
+  FILE_RECORDS                 = 480
+
+  OBJECT                       = TABLE
+    NAME                       = "CRISM STANDARD SAMPLING WAVELENGTH TABLE"
+    INTERCHANGE_FORMAT         = "ASCII"
+    ROWS                       = 480
+    COLUMNS                    = 2
+    ROW_BYTES                  = 14
+    DESCRIPTION                = "CRISM Standard sampling wavelength table "
+
+    OBJECT                     = COLUMN 
+      COLUMN_NUMBER            = 1
+      NAME                     = ROWNUM
+      DATA_TYPE                = ASCII_INTEGER
+      START_BYTE               = 1
+      BYTES                    = 3
+      DESCRIPTION              = "detector row number (0-479)"
+    END_OBJECT                 = COLUMN
+
+    OBJECT                     = COLUMN 
+      COLUMN_NUMBER            = 2
+      NAME                     = SAMPL_WAV
+      DATA_TYPE                = ASCII_REAL
+      START_BYTE               = 5
+      BYTES                    = 8
+      DESCRIPTION              = "Standard sampling center wavelength in nm"
+      UNIT                     = "NM"
+    END_OBJECT                 = COLUMN
+
+  END_OBJECT                   = TABLE
+  
+END_OBJECT                     = FILE
+
+END
+
+
