@@ -26,8 +26,10 @@ import util.JCATMessageWindow;
 
 public class SWCDRLibrary {
 
-  private NavigableMap<Integer, NavigableMap<Integer, String>> swMapS;
-  private NavigableMap<Integer, NavigableMap<Integer, String>> swMapL;
+  // private NavigableMap<Integer, NavigableMap<Integer, String>> swMapS;
+  // private NavigableMap<Integer, NavigableMap<Integer, String>> swMapL;
+  private NavigableMap<Integer, String> swMapS;
+  private NavigableMap<Integer, String> swMapL;
 
   private final String swPath = "/resources/sw";
 
@@ -51,21 +53,21 @@ public class SWCDRLibrary {
   }
 
   public LinkedHashMap<Integer, Double> getBandMap(String detector, int partition, double sclk) {
-    NavigableMap<Integer, NavigableMap<Integer, String>> swMap = null;
+    NavigableMap<Integer, String> swMap = null;
 
     if (detector.trim().equalsIgnoreCase("s"))
       swMap = swMapS;
     else if (detector.trim().equalsIgnoreCase("l"))
       swMap = swMapL;
 
-    Map.Entry<Integer, NavigableMap<Integer, String>> swEntry = swMap.floorEntry(partition);
-    NavigableMap<Integer, String> partitionMap = swEntry.getValue();
-    if (partitionMap == null)
-      return null;
+    // Map.Entry<Integer, NavigableMap<Integer, String>> swEntry = swMap.floorEntry(partition);
+    // NavigableMap<Integer, String> partitionMap = swEntry.getValue();
+    // if (partitionMap == null)
+    //   return null;
 
-    Map.Entry<Integer, String> partitionEntry = partitionMap.floorEntry((int) sclk);
+    Map.Entry<Integer, String> swEntry = swMap.floorEntry((int) sclk);
 
-    String cdrFile = partitionEntry.getValue();
+    String cdrFile = swEntry.getValue();
     if (cdrFile == null)
       return null;
 
@@ -112,11 +114,11 @@ public class SWCDRLibrary {
         if (path.toString().endsWith("tab")) {
           String basename = FilenameUtils.getBaseName(path.toString());
           String[] parts = basename.split("_");
-          int partition = Integer.parseInt(parts[1]);
+          // int partition = Integer.parseInt(parts[1]); # not needed since sclk does not reset on partition change 
           int sclk = Integer.parseInt(parts[2]);
           String detector = parts[4];
 
-          NavigableMap<Integer, NavigableMap<Integer, String>> swMap;
+          NavigableMap<Integer, String> swMap;
           if (detector.equalsIgnoreCase("s")) {
             swMap = swMapS;
           } else if (detector.equalsIgnoreCase("l")) {
@@ -124,13 +126,18 @@ public class SWCDRLibrary {
           } else
             continue;
 
-          NavigableMap<Integer, String> partitionMap = swMap.get(partition);
-          if (partitionMap == null) {
-            partitionMap = new TreeMap<>();
-            swMap.put(partition, partitionMap);
+          // NavigableMap<Integer, String> partitionMap = swMap.get(partition);
+          // if (partitionMap == null) {
+          //   partitionMap = new TreeMap<>();
+          //   swMap.put(partition, partitionMap);
+          // }
+
+          String swEntry = swMap.get(sclk);
+          if (swEntry == null){
+              swMap.put(sclk, path.toString());
           }
 
-          partitionMap.put(sclk, path.toString());
+          // partitionMap.put(sclk, path.toString());
         }
       }
     }
